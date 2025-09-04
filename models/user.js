@@ -2,7 +2,12 @@ import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema(
     {
-        email: { type: String, required: true, unique: true },
+        email: {
+            type: String,
+            required: true,
+            unique: true,
+            match: [/^\S+@\S+\.\S+$/, "Invalid email format"]
+        },
         password: { type: String, required: true }
     },
     {
@@ -14,14 +19,18 @@ const userSchema = new mongoose.Schema(
 const tenantSchema = new mongoose.Schema({
     companyName: { type: String, required: true },
     address: { type: String, required: true },
-    phone: { type: String, required: true },
+    phone: {
+        type: String,
+        required: true,
+        match: [/^\+380\d{9}$/, "Phone must be in +380XXXXXXXXX format"]
+    },
     requisites: { type: String, required: true },
     contactPerson: { type: String, required: true }
 });
 
 const managerSchema = new mongoose.Schema({});
 
-const User = mongoose.model("User", userSchema);
+export const User = mongoose.model("User", userSchema);
 export const Tenant = User.discriminator("tenant", tenantSchema);
 export const Manager = User.discriminator("manager", managerSchema);
 
