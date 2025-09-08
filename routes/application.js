@@ -11,23 +11,78 @@ import {
     getMyApplications,
     rejectApplication
 } from "../controllers/application.js";
+import { createApplicationValidator } from "../middlewares/validators/application.js";
+import { idValidator } from "../middlewares/validators/idValidator.js";
+import { validationErrorHandler } from "../middlewares/validationErrorHandler.js";
 
 const router = express.Router();
 
-router.post("/", authenticate, authorize("tenant"), catchAsyncHandler(createApplication));
+router.post(
+    "/",
+    authenticate,
+    authorize("tenant"),
+    createApplicationValidator,
+    validationErrorHandler,
+    catchAsyncHandler(createApplication)
+);
 
-router.post("/:id/approve", authenticate, authorize("manager"), catchAsyncHandler(approveApplication));
+router.post(
+    "/:id/approve",
+    authenticate,
+    authorize("manager"),
+    idValidator,
+    validationErrorHandler,
+    catchAsyncHandler(approveApplication)
+);
 
-router.post("/:id/reject", authenticate, authorize("manager"), catchAsyncHandler(rejectApplication));
+router.post(
+    "/:id/reject",
+    authenticate,
+    authorize("manager"),
+    idValidator,
+    validationErrorHandler,
+    catchAsyncHandler(rejectApplication)
+);
 
-router.delete("/:id", authenticate, authorize("tenant", "manager"), catchAsyncHandler(deleteApplication));
+router.delete(
+    "/:id",
+    authenticate,
+    authorize("tenant", "manager"),
+    idValidator,
+    validationErrorHandler,
+    catchAsyncHandler(deleteApplication)
+);
 
-router.get("/", authenticate, authorize("manager"), catchAsyncHandler(getAllApplications));
+router.get(
+    "/",
+    authenticate,
+    authorize("manager"),
+    catchAsyncHandler(getAllApplications)
+);
 
-router.get("/tenant/:id", authenticate, authorize("manager"), catchAsyncHandler(getApplicationsByTenant));
+router.get(
+    "/tenant/:id",
+    authenticate,
+    authorize("manager"),
+    idValidator,
+    validationErrorHandler,
+    catchAsyncHandler(getApplicationsByTenant)
+);
 
-router.get("/trade-point/:id", authenticate, authorize("manager"), catchAsyncHandler(getApplicationsByTradePoint));
+router.get(
+    "/trade-point/:id",
+    authenticate,
+    authorize("manager"),
+    idValidator,
+    validationErrorHandler,
+    catchAsyncHandler(getApplicationsByTradePoint)
+);
 
-router.get("/my", authenticate, authorize("tenant"), catchAsyncHandler(getMyApplications));
+router.get(
+    "/my",
+    authenticate,
+    authorize("tenant"),
+    catchAsyncHandler(getMyApplications)
+);
 
 export default router;

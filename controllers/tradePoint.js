@@ -1,5 +1,6 @@
 import TradePoint from "../models/tradePoint.js";
 import createError from "http-errors";
+import Lease from "../models/lease.js";
 
 export const createTradePoint = async (req, res) => {
     const { floor, area, hasConditioner, dailyPrice } = req.body;
@@ -54,7 +55,41 @@ export const deleteTradePoint = async (req, res, next) => {
 }
 
 export const getAllTradePoints = async (req, res) => {
-    const tradePoints = await TradePoint.find();
+    const { floor, minArea, maxArea, hasConditioner, minPrice, maxPrice } = req.query;
 
-    res.status(200).json(tradePoints);
+    const filter = {};
+
+    if (floor) filter.floor = floor;
+
+    if (minArea || maxArea) {
+        filter.area = {};
+        if (minArea) filter.area.$gte = Number(minArea);
+        if (maxArea) filter.area.$lte = Number(maxArea);
+    }
+
+    if (hasConditioner !== undefined) filter.hasConditioner = hasConditioner;
+
+    if (minPrice || maxPrice) {
+        filter.dailyPrice = {};
+        if (minPrice) filter.dailyPrice.$gte = Number(minPrice);
+        if (maxPrice) filter.dailyPrice.$lte = Number(maxPrice);
+    }
+
+    const tradePoints = await TradePoint.find(filter);
+
+    const results = await Promise.all(
+        tradePoints.map(async (tradePoint) => {
+            const leases = await Lease.find({ tradePoint: tradePoint._id }).select("startDate endDate");
+            const bookedPeriods = leases.map(l => ({
+                startDate: l.startDate,
+                endDate: l.endDate
+            }));
+            return {
+                ...tradePoint.toObject(),
+                bookedPeriods
+            };
+        })
+    );
+
+    res.status(200).json(results);
 }

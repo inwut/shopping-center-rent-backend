@@ -6,16 +6,52 @@ import {
     updateTradePoint,
     deleteTradePoint
 } from "../controllers/tradePoint.js";
-import {catchAsyncHandler} from "../utils/catchAsyncHandler.js";
+import { catchAsyncHandler } from "../utils/catchAsyncHandler.js";
+import { validationErrorHandler } from "../middlewares/validationErrorHandler.js";
+import { idValidator } from "../middlewares/validators/idValidator.js";
+import {
+    createTradePointValidator,
+    getAllTradePointsValidator,
+    updateTradePointValidator
+} from "../middlewares/validators/tradePoint.js";
 
 const router = express.Router();
 
-router.post("/", authenticate, authorize("manager"), catchAsyncHandler(createTradePoint));
+router.post(
+    "/",
+    authenticate,
+    authorize("manager"),
+    createTradePointValidator,
+    validationErrorHandler,
+    catchAsyncHandler(createTradePoint)
+);
 
-router.put("/:id", authenticate, authorize("manager"), catchAsyncHandler(updateTradePoint));
+router.put(
+    "/:id",
+    authenticate,
+    authorize("manager"),
+    idValidator,
+    updateTradePointValidator,
+    validationErrorHandler,
+    catchAsyncHandler(updateTradePoint)
+);
 
-router.delete("/:id", authenticate, authorize("manager"), catchAsyncHandler(deleteTradePoint));
+router.delete(
+    "/:id",
+    authenticate,
+    authorize("manager"),
+    idValidator,
+    validationErrorHandler,
+    catchAsyncHandler(deleteTradePoint)
+);
 
-router.get("/", authenticate, authorize("manager", "tenant"), catchAsyncHandler(getAllTradePoints));
+router.get(
+    "/",
+    authenticate,
+    authorize("manager", "tenant"),
+    getAllTradePointsValidator,
+    validationErrorHandler,
+    catchAsyncHandler(getAllTradePoints)
+);
 
 export default router;
