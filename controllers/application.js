@@ -112,3 +112,11 @@ export const getApplicationsByTradePoint = async (req, res) => {
 
     res.status(200).json(applications);
 };
+
+export const getMyApplications = async (req, res) => {
+    const user = req.user;
+
+    const applications = await Application.find({ tenant: user.id });
+
+    res.status(200).json(applications);
+}

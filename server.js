@@ -8,6 +8,7 @@ import cookieParser from "cookie-parser";
 import authRoutes from "./routes/auth.js";
 import tradePointRoutes from "./routes/tradePoint.js";
 import applicationRoutes from "./routes/application.js";
+import leaseRoutes from "./routes/lease.js";
 
 const PORT = process.env.PORT || 3000;
 
@@ -22,9 +23,10 @@ initPassport(passport);
 
 app.use("/api", authRoutes);
 app.use("/api/trade-point", tradePointRoutes);
-app.use("/api/application", applicationRoutes)
+app.use("/api/application", applicationRoutes);
+app.use("/api/lease", leaseRoutes);
 
-app.use((req, res, next) => {
+app.use((req, res) => {
     res.status(404).json({ message: `Can't find ${req.originalUrl} on this server` });
 });
 

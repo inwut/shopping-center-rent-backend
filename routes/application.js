@@ -1,12 +1,16 @@
 import express from "express";
 import { authenticate, authorize } from "../middlewares/auth.js";
+import { catchAsyncHandler } from "../utils/catchAsyncHandler.js";
 import {
     approveApplication,
     createApplication,
-    deleteApplication, getAllApplications, getApplicationsByTenant, getApplicationsByTradePoint,
+    deleteApplication,
+    getAllApplications,
+    getApplicationsByTenant,
+    getApplicationsByTradePoint,
+    getMyApplications,
     rejectApplication
 } from "../controllers/application.js";
-import {catchAsyncHandler} from "../utils/catchAsyncHandler.js";
 
 const router = express.Router();
 
@@ -20,9 +24,10 @@ router.delete("/:id", authenticate, authorize("tenant", "manager"), catchAsyncHa
 
 router.get("/", authenticate, authorize("manager"), catchAsyncHandler(getAllApplications));
 
-router.get("/tenant/:id", authenticate, authorize("tenant", "manager"), catchAsyncHandler(getApplicationsByTenant));
+router.get("/tenant/:id", authenticate, authorize("manager"), catchAsyncHandler(getApplicationsByTenant));
 
 router.get("/trade-point/:id", authenticate, authorize("manager"), catchAsyncHandler(getApplicationsByTradePoint));
 
+router.get("/my", authenticate, authorize("tenant"), catchAsyncHandler(getMyApplications));
 
 export default router;
