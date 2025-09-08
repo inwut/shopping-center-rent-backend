@@ -7,6 +7,7 @@ import { globalErrorHandler } from "./middlewares/globalErrorHandler.js";
 import cookieParser from "cookie-parser";
 import authRoutes from "./routes/auth.js";
 import tradePointRoutes from "./routes/tradePoint.js";
+import applicationRoutes from "./routes/application.js";
 
 const PORT = process.env.PORT || 3000;
 
@@ -21,6 +22,7 @@ initPassport(passport);
 
 app.use("/api", authRoutes);
 app.use("/api/trade-point", tradePointRoutes);
+app.use("/api/application", applicationRoutes)
 
 app.use((req, res, next) => {
     res.status(404).json({ message: `Can't find ${req.originalUrl} on this server` });

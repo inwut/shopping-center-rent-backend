@@ -1,5 +1,5 @@
 import express from "express";
-import { auth, authorize } from "../middlewares/auth.js";
+import { authenticate, authorize } from "../middlewares/auth.js";
 import {
     createTradePoint,
     getAllTradePoints,
@@ -10,12 +10,12 @@ import {catchAsyncHandler} from "../utils/catchAsyncHandler.js";
 
 const router = express.Router();
 
-router.post("/", auth, authorize("manager"), catchAsyncHandler(createTradePoint));
+router.post("/", authenticate, authorize("manager"), catchAsyncHandler(createTradePoint));
 
-router.put("/:id", auth, authorize("manager"), catchAsyncHandler(updateTradePoint));
+router.put("/:id", authenticate, authorize("manager"), catchAsyncHandler(updateTradePoint));
 
-router.delete("/:id", auth, authorize("manager"), catchAsyncHandler(deleteTradePoint));
+router.delete("/:id", authenticate, authorize("manager"), catchAsyncHandler(deleteTradePoint));
 
-router.get("/", auth, authorize("manager", "tenant"), catchAsyncHandler(getAllTradePoints));
+router.get("/", authenticate, authorize("manager", "tenant"), catchAsyncHandler(getAllTradePoints));
 
 export default router;

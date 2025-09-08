@@ -1,7 +1,7 @@
 import passport from "passport";
 import createError from "http-errors";
 
-export const auth = (req, res, next) => {
+export const authenticate = (req, res, next) => {
     passport.authenticate("jwt", { session: false }, (err, user, info) => {
         if (err) return next(err);
 

@@ -50,7 +50,7 @@ export const deleteTradePoint = async (req, res, next) => {
 
     res.status(200).json({
         message: "Successfully deleted trade point",
-    })
+    });
 }
 
 export const getAllTradePoints = async (req, res) => {

@@ -31,7 +31,7 @@ const leaseSchema = new mongoose.Schema({
             message: "End date must be after start date"
         },
     },
-    monthlyPayment: { type: Number, required: true },
+    totalPayment: { type: Number, required: true },
 }, { timestamps: true });
 
 export default mongoose.model("Lease", leaseSchema);
